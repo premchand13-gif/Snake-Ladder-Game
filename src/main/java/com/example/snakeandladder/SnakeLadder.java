@@ -17,6 +17,10 @@ import java.io.IOException;
 public class SnakeLadder extends Application {
    public static final int tileSize=40,height=10,width=10;
    public int diceNumber;
+   public int playerOneTrigger=0;
+    public int playerTwoTrigger=0;
+    Label globalPlayerOne=new Label("");
+    Label globalPlayerTwo=new Label("");
    public boolean playerOneAccess=false,playerTwoAccess=false,startGame=true;
     //creating random number generator function for rolling dice
     public void randNumberGenerator(){
@@ -38,8 +42,10 @@ public class SnakeLadder extends Application {
         //Start button functionality
         Button startButton=new Button("START");
         startButton.setTranslateX(150);
-        startButton.setTranslateY(height*tileSize+50);
+        startButton.setTranslateY(height*tileSize+60);
         startButton.setTextFill(Color.GREEN);
+        Label wildCardLabel=new Label("WildCard->56");
+
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
@@ -59,6 +65,8 @@ public class SnakeLadder extends Application {
         diceLabel.setTextFill(Color.RED);
         diceLabel.setTranslateX(150);
         diceLabel.setTranslateY(height*tileSize+10);
+        wildCardLabel.setTranslateX(150);
+        wildCardLabel.setTranslateY(height*tileSize+30);
 
         // Players button option
         Button player1=new Button("Player one");
@@ -76,13 +84,20 @@ public class SnakeLadder extends Application {
                 if(playerOneAccess) {
                     randNumberGenerator();
                     diceLabel.setText("DiceNumber : " + diceNumber);
-                    playerOne.moveCoin(diceNumber);
+                    playerOne.moveCoin(diceNumber,playerOneTrigger);
                     player1Score.setText( playerOne.getName()+" : "+playerOne.getCoinPosition());
                    playerOneAccess=false;
                    playerTwoAccess=true;
-                   if(playerOne.getCoinPosition()==100){
+                   if(playerOne.getCoinPosition()==100||playerOne.getCoinPosition()==56){
+                       playerOneTrigger=1;
+                       globalPlayerOne.setText("Reached Half Path");
+                       globalPlayerOne.setTextFill(Color.GREEN);
+                       diceLabel.setText(playerOne.getName()+" Reached Top!");
+                   }
+                   if(playerOne.getCoinPosition()==1&& playerOneTrigger==1){
                        playerTwoAccess=false;
-                       diceLabel.setText(playerOne.getName()+" Won!");
+                       globalPlayerOne.setText("");
+                       diceLabel.setText(playerOne.getName()+" Won..!");
                        diceLabel.setTextFill(Color.GREEN);
                    }
                 }
@@ -95,21 +110,54 @@ public class SnakeLadder extends Application {
                 if(playerTwoAccess) {
                     randNumberGenerator();
                     diceLabel.setText("DiceNumber : " + diceNumber);
-                    playerTwo.moveCoin(diceNumber);
+                    playerTwo.moveCoin(diceNumber,playerTwoTrigger);
                     player2Score.setText(playerTwo.getName()+" : "+playerTwo.getCoinPosition());
                     playerOneAccess=true;
                     playerTwoAccess=false;
-                    if(playerTwo.getCoinPosition()==100){
-                        playerOneAccess=false;
-                        diceLabel.setText(playerTwo.getName()+" Won!");
+                    if(playerTwo.getCoinPosition()==100||playerTwo.getCoinPosition()==56){
+                        playerTwoTrigger=1;
+                        globalPlayerTwo.setText("Reached Half Path");
+                        diceLabel.setText(playerTwo.getName()+" Reached Top!");
                         diceLabel.setTextFill(Color.GREEN);
                     }
+                    if(playerTwoTrigger==1&&playerTwo.getCoinPosition()==1){
+                        playerOneAccess=false;
+                        globalPlayerTwo.setText("");
+                        diceLabel.setText(playerTwo.getName()+" Won..!");
+                        diceLabel.setTextFill(Color.GREEN);
+                    }
+
                 }
             }
         });
         player2.setTranslateY(height*tileSize+10);
         player2.setTranslateX(300);
-
+        globalPlayerOne.setTranslateX(20);
+        globalPlayerOne.setTranslateY(height*tileSize+70);
+        globalPlayerTwo.setTranslateX(300);
+        globalPlayerTwo.setTranslateY(height*tileSize+70);
+        Button reStart =new Button("Restart");
+        reStart.setTextFill(Color.RED);
+        reStart.setTranslateY(height*tileSize+60);
+        reStart.setTranslateX(220);
+        reStart.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent actionEvent) {
+                playerTwoTrigger=0;
+                playerOneTrigger=0;
+                startGame=true;
+                playerOneAccess=false;
+                playerTwoAccess=false;
+                globalPlayerTwo.setText("");
+                globalPlayerOne.setText("");
+                 playerOne.setCoinPosition(1);
+                 player1Score.setText(playerOne.getName()+" : "+playerOne.getCoinPosition());
+                 playerOne.moveCoin(0,0);
+                 playerTwo.setCoinPosition(1);
+                 player2Score.setText(playerTwo.getName()+" : "+playerTwo.getCoinPosition());
+                 playerTwo.moveCoin(0,0);
+            }
+        });
 
 
         // Setting Background
@@ -118,7 +166,7 @@ public class SnakeLadder extends Application {
         board.setImage(img);
         board.setFitHeight(tileSize*height);
         board.setFitWidth(tileSize*width);
-        root.getChildren().addAll(board,diceLabel,player1Score,player2Score,player1,player2,playerOne.getCoin(),playerTwo.getCoin(),startButton);
+        root.getChildren().addAll(board,diceLabel,reStart,wildCardLabel,player1Score,player2Score,globalPlayerTwo,globalPlayerOne,player1,player2,playerOne.getCoin(),playerTwo.getCoin(),startButton);
         return root;
     }
     @Override

@@ -24,8 +24,8 @@ public class Player {
         return coin;
     }
 
-    public void moveCoin(int diceNumber){
-         if(diceNumber+coinPosition<=100){
+    public void moveCoin(int diceNumber,int trigger){
+         if(diceNumber+coinPosition<=100&&trigger==0){
 
              coinPosition+=diceNumber;
              if(gameBoard.twistInTheGame.containsKey(coinPosition)){
@@ -35,6 +35,13 @@ public class Player {
 //             coin.setTranslateY(gameBoard.getCoordinateY(coinPosition));
 
               translateTransition();
+         }
+         else if(trigger==1&& coinPosition-diceNumber>0){
+             coinPosition-=diceNumber;
+             if(gameBoard.twistInTheGame.containsKey(coinPosition)){
+                 coinPosition=gameBoard.twistInTheGame.get(coinPosition);
+             }
+             translateTransition();
          }
     }
     public void translateTransition(){
@@ -47,6 +54,10 @@ public class Player {
 
     public int getCoinPosition() {
         return coinPosition;
+    }
+
+    public void setCoinPosition(int coinPosition) {
+        this.coinPosition = coinPosition;
     }
 
     public String getName() {

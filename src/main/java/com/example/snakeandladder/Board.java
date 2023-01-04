@@ -65,12 +65,12 @@ public class Board {
         return coinPositionStore.get(diceNumber).getValue();
     }
 
-    public static void main(String[] args) {
-        Board board=new Board();
-        board.coinPositionMapper();
-        for(int i=0;i<board.coinPositionStore.size();i++){
-            System.out.println(i+" x="+board.coinPositionStore.get(i).getKey()+" y"+board.coinPositionStore.get(i).getValue());
-        }
-    }
+//    public static void main(String[] args) {
+//        Board board=new Board();
+//        board.coinPositionMapper();
+//        for(int i=0;i<board.coinPositionStore.size();i++){
+//            System.out.println(i+" x="+board.coinPositionStore.get(i).getKey()+" y"+board.coinPositionStore.get(i).getValue());
+//        }
+//    }
 
 }
